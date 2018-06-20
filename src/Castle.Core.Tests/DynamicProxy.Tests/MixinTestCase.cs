@@ -16,11 +16,8 @@ namespace Castle.DynamicProxy.Tests
 {
 	using System;
 	using System.Reflection;
-
-	using Castle.DynamicProxy.Tests.Classes;
-	using Castle.DynamicProxy.Tests.Mixins;
 	using Castle.DynamicProxy.Tests.InterClasses;
-	using Interceptors;
+	using Castle.DynamicProxy.Tests.Mixins;
 	using NUnit.Framework;
 
 	[TestFixture]
@@ -83,23 +80,23 @@ namespace Castle.DynamicProxy.Tests
 
 			public virtual int Calc(int x, int y, int z, Single k)
 			{
-				return x + y + z + (int) k;
+				return x + y + z + (int)k;
 			}
 		}
 
 		[Test]
 		public void SimpleMixin_ClassProxy()
 		{
-			IProxyGenerationOptions options = new ProxyGenerationOptions();
+			ProxyGenerationOptions options = new ProxyGenerationOptions();
 			SimpleMixin mixin_instance = new SimpleMixin();
 			options.AddMixinInstance(mixin_instance);
 
 			AssertInvocationInterceptor interceptor = new AssertInvocationInterceptor();
 
-			object proxy = generator.CreateClassProxy(typeof (SimpleClass), options, interceptor);
+			object proxy = generator.CreateClassProxy(typeof(SimpleClass), options, interceptor);
 
 			Assert.IsNotNull(proxy);
-			Assert.IsTrue(typeof (SimpleClass).IsAssignableFrom(proxy.GetType()));
+			Assert.IsTrue(typeof(SimpleClass).IsAssignableFrom(proxy.GetType()));
 
 			Assert.IsFalse(interceptor.Invoked);
 
@@ -115,17 +112,17 @@ namespace Castle.DynamicProxy.Tests
 		[Test]
 		public void SimpleMixin_InterfaceProxy_WithTarget()
 		{
-			IProxyGenerationOptions options = new ProxyGenerationOptions();
+			ProxyGenerationOptions options = new ProxyGenerationOptions();
 			SimpleMixin mixin_instance = new SimpleMixin();
 			options.AddMixinInstance(mixin_instance);
 
 			AssertInvocationInterceptor interceptor = new AssertInvocationInterceptor();
 
-			object proxy = generator.CreateInterfaceProxyWithTarget(typeof (IService), new ServiceImpl(),
-			                                                        options, interceptor);
+			object proxy = generator.CreateInterfaceProxyWithTarget(typeof(IService), new ServiceImpl(),
+																	options, interceptor);
 
 			Assert.IsNotNull(proxy);
-			Assert.IsTrue(typeof (IService).IsAssignableFrom(proxy.GetType()));
+			Assert.IsTrue(typeof(IService).IsAssignableFrom(proxy.GetType()));
 
 			Assert.IsFalse(interceptor.Invoked);
 
@@ -141,17 +138,17 @@ namespace Castle.DynamicProxy.Tests
 		[Test]
 		public void SimpleMixin_InterfaceProxy_WithoutTarget()
 		{
-			IProxyGenerationOptions options = new ProxyGenerationOptions();
+			ProxyGenerationOptions options = new ProxyGenerationOptions();
 			SimpleMixin mixin_instance = new SimpleMixin();
 			options.AddMixinInstance(mixin_instance);
 
 			AssertInvocationInterceptor interceptor = new AssertInvocationInterceptor();
 
-			object proxy = generator.CreateInterfaceProxyWithoutTarget(typeof (IService), new Type[0],
-			                                                           options, interceptor);
+			object proxy = generator.CreateInterfaceProxyWithoutTarget(typeof(IService), new Type[0],
+																	   options, interceptor);
 
 			Assert.IsNotNull(proxy);
-			Assert.IsTrue(typeof (IService).IsAssignableFrom(proxy.GetType()));
+			Assert.IsTrue(typeof(IService).IsAssignableFrom(proxy.GetType()));
 
 			Assert.IsFalse(interceptor.Invoked);
 
@@ -167,17 +164,17 @@ namespace Castle.DynamicProxy.Tests
 		[Test]
 		public void SimpleMixin_InterfaceProxy_WithtTargetInterface()
 		{
-			IProxyGenerationOptions options = new ProxyGenerationOptions();
+			ProxyGenerationOptions options = new ProxyGenerationOptions();
 			SimpleMixin mixin_instance = new SimpleMixin();
 			options.AddMixinInstance(mixin_instance);
 
 			AssertInvocationInterceptor interceptor = new AssertInvocationInterceptor();
 
-			object proxy = generator.CreateInterfaceProxyWithTargetInterface(typeof (IService), new ServiceImpl(), options,
-			                                                                 interceptor);
+			object proxy = generator.CreateInterfaceProxyWithTargetInterface(typeof(IService), new ServiceImpl(), options,
+																			 interceptor);
 
 			Assert.IsNotNull(proxy);
-			Assert.IsTrue(typeof (IService).IsAssignableFrom(proxy.GetType()));
+			Assert.IsTrue(typeof(IService).IsAssignableFrom(proxy.GetType()));
 
 			Assert.IsFalse(interceptor.Invoked);
 
@@ -204,12 +201,12 @@ namespace Castle.DynamicProxy.Tests
 			AssertInvocationInterceptor interceptor = new AssertInvocationInterceptor();
 
 			object proxy = generator.CreateClassProxy(
-				typeof (SimpleClass), proxyGenerationOptions, interceptor);
+				typeof(SimpleClass), proxyGenerationOptions, interceptor);
 
 			Assert.IsFalse(interceptor.Invoked);
 
 			Assert.IsNotNull(proxy);
-			Assert.IsTrue(typeof (SimpleClass).IsAssignableFrom(proxy.GetType()));
+			Assert.IsTrue(typeof(SimpleClass).IsAssignableFrom(proxy.GetType()));
 
 			ISimpleMixin mixin = proxy as ISimpleMixin;
 			Assert.IsNotNull(mixin);
@@ -240,10 +237,10 @@ namespace Castle.DynamicProxy.Tests
 			MyInterfaceImpl target = new MyInterfaceImpl();
 
 			object proxy = generator.CreateInterfaceProxyWithTarget(
-				typeof (IMyInterface), target, proxyGenerationOptions, interceptor);
+				typeof(IMyInterface), target, proxyGenerationOptions, interceptor);
 
 			Assert.IsNotNull(proxy);
-			Assert.IsTrue(typeof (IMyInterface).IsAssignableFrom(proxy.GetType()));
+			Assert.IsTrue(typeof(IMyInterface).IsAssignableFrom(proxy.GetType()));
 
 			Assert.IsFalse(interceptor.Invoked);
 
@@ -262,11 +259,11 @@ namespace Castle.DynamicProxy.Tests
 			ProxyGenerationOptions proxyGenerationOptions = new ProxyGenerationOptions();
 			proxyGenerationOptions.AddMixinInstance(new SimpleMixin());
 			object proxy = generator.CreateClassProxy(
-				typeof (object), proxyGenerationOptions, new AssertInvocationInterceptor());
+				typeof(object), proxyGenerationOptions, new AssertInvocationInterceptor());
 
 			Assert.IsTrue(proxy is ISimpleMixin);
 
-			((ISimpleMixin) proxy).DoSomething();
+			((ISimpleMixin)proxy).DoSomething();
 		}
 
 		[Test]
@@ -280,10 +277,10 @@ namespace Castle.DynamicProxy.Tests
 			AssertInvocationInterceptor interceptor = new AssertInvocationInterceptor();
 
 			object proxy = generator.CreateClassProxy(
-				typeof (SimpleClass), proxyGenerationOptions, interceptor);
+				typeof(SimpleClass), proxyGenerationOptions, interceptor);
 
 			Assert.IsNotNull(proxy);
-			Assert.IsTrue(typeof (SimpleClass).IsAssignableFrom(proxy.GetType()));
+			Assert.IsTrue(typeof(SimpleClass).IsAssignableFrom(proxy.GetType()));
 
 			Assert.IsFalse(interceptor.Invoked);
 
@@ -315,13 +312,13 @@ namespace Castle.DynamicProxy.Tests
 		[Test]
 		public void TestTypeCachingWithMixins()
 		{
-			IProxyGenerationOptions options = new ProxyGenerationOptions();
+			ProxyGenerationOptions options = new ProxyGenerationOptions();
 			SimpleMixin mixin_instance = new SimpleMixin();
 			options.AddMixinInstance(mixin_instance);
 
 			AssertInvocationInterceptor interceptor = new AssertInvocationInterceptor();
 
-			object proxy1 = generator.CreateClassProxy(typeof (SimpleClass), options, interceptor);
+			object proxy1 = generator.CreateClassProxy(typeof(SimpleClass), options, interceptor);
 
 			options = new ProxyGenerationOptions();
 			mixin_instance = new SimpleMixin();
@@ -329,7 +326,7 @@ namespace Castle.DynamicProxy.Tests
 
 			interceptor = new AssertInvocationInterceptor();
 
-			object proxy2 = generator.CreateClassProxy(typeof (SimpleClass), options, interceptor);
+			object proxy2 = generator.CreateClassProxy(typeof(SimpleClass), options, interceptor);
 
 			Assert.IsTrue(proxy1.GetType().Equals(proxy2.GetType()));
 		}
@@ -337,7 +334,7 @@ namespace Castle.DynamicProxy.Tests
 		[Test]
 		public void TestTypeCachingWithMultipleMixins()
 		{
-			IProxyGenerationOptions options = new ProxyGenerationOptions();
+			ProxyGenerationOptions options = new ProxyGenerationOptions();
 			SimpleMixin mixin_instance1 = new SimpleMixin();
 			ComplexMixin mixin_instance2 = new ComplexMixin();
 			options.AddMixinInstance(mixin_instance1);
@@ -345,7 +342,7 @@ namespace Castle.DynamicProxy.Tests
 
 			AssertInvocationInterceptor interceptor = new AssertInvocationInterceptor();
 
-			object proxy1 = generator.CreateClassProxy(typeof (SimpleClass), options, interceptor);
+			object proxy1 = generator.CreateClassProxy(typeof(SimpleClass), options, interceptor);
 
 			options = new ProxyGenerationOptions();
 			mixin_instance1 = new SimpleMixin();
@@ -355,7 +352,7 @@ namespace Castle.DynamicProxy.Tests
 
 			interceptor = new AssertInvocationInterceptor();
 
-			object proxy2 = generator.CreateClassProxy(typeof (SimpleClass), options, interceptor);
+			object proxy2 = generator.CreateClassProxy(typeof(SimpleClass), options, interceptor);
 
 			Assert.IsTrue(proxy1.GetType().Equals(proxy2.GetType()));
 		}
@@ -363,7 +360,7 @@ namespace Castle.DynamicProxy.Tests
 		[Test]
 		public void TwoMixinsWithSameInterface()
 		{
-			IProxyGenerationOptions options = new ProxyGenerationOptions();
+			ProxyGenerationOptions options = new ProxyGenerationOptions();
 			SimpleMixin mixin1 = new SimpleMixin();
 			OtherMixinImplementingISimpleMixin mixin2 = new OtherMixinImplementingISimpleMixin();
 			options.AddMixinInstance(mixin1);
@@ -379,19 +376,19 @@ namespace Castle.DynamicProxy.Tests
 		[Test]
 		public void MixinWithSameInterface_InterfaceWithTarget_AdditionalInterfaces()
 		{
-			IProxyGenerationOptions options = new ProxyGenerationOptions();
+			ProxyGenerationOptions options = new ProxyGenerationOptions();
 			SimpleMixin mixin1 = new SimpleMixin();
 			options.AddMixinInstance(mixin1);
 
 			StandardInterceptor interceptor = new StandardInterceptor();
-			var proxy = generator.CreateInterfaceProxyWithTarget(typeof(IService), new Type[] {typeof (ISimpleMixin)}, new ServiceImpl(), options, interceptor);
+			var proxy = generator.CreateInterfaceProxyWithTarget(typeof(IService), new Type[] { typeof(ISimpleMixin) }, new ServiceImpl(), options, interceptor);
 			Assert.AreEqual(1, (proxy as ISimpleMixin).DoSomething());
 		}
 
 		[Test]
 		public void MixinWithSameInterface_InterfaceWithTarget_AdditionalInterfaces_Derived()
 		{
-			IProxyGenerationOptions options = new ProxyGenerationOptions();
+			ProxyGenerationOptions options = new ProxyGenerationOptions();
 			SimpleMixin mixin1 = new SimpleMixin();
 			options.AddMixinInstance(mixin1);
 
