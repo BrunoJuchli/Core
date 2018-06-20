@@ -20,7 +20,6 @@ namespace Castle.DynamicProxy.Generators
 	using System.Reflection;
 
 	using Castle.DynamicProxy.Contributors;
-	using Castle.DynamicProxy.Generators.Emitters;
 	using Castle.DynamicProxy.Generators.Emitters.SimpleAST;
 	using Castle.DynamicProxy.Internal;
 	using Castle.DynamicProxy.Serialization;
@@ -33,11 +32,8 @@ namespace Castle.DynamicProxy.Generators
 			EnsureDoesNotImplementIProxyTargetAccessor(targetType, "targetType");
 		}
 
-		public Type GenerateCode(Type[] interfaces, ProxyGenerationOptions options)
+		public Type GenerateCode(Type[] interfaces, IProxyGenerationOptions options)
 		{
-			// make sure ProxyGenerationOptions is initialized
-			options.Initialize();
-
 			interfaces = TypeUtil.GetAllInterfaces(interfaces);
 			CheckNotGenericTypeDefinitions(interfaces, "interfaces");
 			ProxyGenerationOptions = options;

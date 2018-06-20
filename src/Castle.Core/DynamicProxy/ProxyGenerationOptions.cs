@@ -16,11 +16,11 @@ namespace Castle.DynamicProxy
 {
 	using System;
 	using System.Collections.Generic;
-	using System.Reflection.Emit;
 #if FEATURE_SERIALIZATION
 	using System.Runtime.Serialization;
 #endif
 	using Castle.Core.Internal;
+
 #if DOTNET40
 	using System.Security;
 #endif
@@ -28,12 +28,12 @@ namespace Castle.DynamicProxy
 #if FEATURE_SERIALIZATION
 	[Serializable]
 #endif
-	public class ProxyGenerationOptions
+	public class ProxyGenerationOptions : IProxyGenerationOptions
 #if FEATURE_SERIALIZATION
-		: ISerializable
+		, ISerializable
 #endif
 	{
-		public static readonly ProxyGenerationOptions Default = new ProxyGenerationOptions();
+		public static readonly IProxyGenerationOptions Default = CreateDefault();
 
 		private List<object> mixins;
 		internal readonly IList<Attribute> attributesToAddToGeneratedTypes = new List<Attribute>();
@@ -155,6 +155,13 @@ namespace Castle.DynamicProxy
 			get { return mixins != null && mixins.Count != 0; }
 		}
 
+		private static ProxyGenerationOptions CreateDefault()
+		{
+			var instance = new ProxyGenerationOptions();
+			instance.Initialize();
+			return instance;
+		}
+
 		public override bool Equals(object obj)
 		{
 			if (ReferenceEquals(this, obj))
@@ -201,10 +208,10 @@ namespace Castle.DynamicProxy
 			Initialize();
 
 			var result = Hook != null ? Hook.GetType().GetHashCode() : 0;
-			result = 29*result + (Selector != null ? 1 : 0);
-			result = 29*result + MixinData.GetHashCode();
-			result = 29*result + (BaseTypeForInterfaceProxy != null ? BaseTypeForInterfaceProxy.GetHashCode() : 0);
-			result = 29*result + CollectionExtensions.GetContentsHashCode(AdditionalAttributes);
+			result = 29 * result + (Selector != null ? 1 : 0);
+			result = 29 * result + MixinData.GetHashCode();
+			result = 29 * result + (BaseTypeForInterfaceProxy != null ? BaseTypeForInterfaceProxy.GetHashCode() : 0);
+			result = 29 * result + CollectionExtensions.GetContentsHashCode(AdditionalAttributes);
 			return result;
 		}
 	}

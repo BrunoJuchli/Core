@@ -59,7 +59,7 @@ namespace Castle.DynamicProxy
 			get { return scope; }
 		}
 
-		public Type CreateClassProxyType(Type classToProxy, Type[] additionalInterfacesToProxy, ProxyGenerationOptions options)
+		public Type CreateClassProxyType(Type classToProxy, Type[] additionalInterfacesToProxy, IProxyGenerationOptions options)
 		{
 			AssertValidType(classToProxy);
 			AssertValidTypes(additionalInterfacesToProxy);
@@ -69,7 +69,7 @@ namespace Castle.DynamicProxy
 		}
 
 		public Type CreateClassProxyTypeWithTarget(Type classToProxy, Type[] additionalInterfacesToProxy,
-		                                           ProxyGenerationOptions options)
+		                                           IProxyGenerationOptions options)
 		{
 			AssertValidType(classToProxy);
 			AssertValidTypes(additionalInterfacesToProxy);
@@ -80,7 +80,7 @@ namespace Castle.DynamicProxy
 
 		public Type CreateInterfaceProxyTypeWithTarget(Type interfaceToProxy, Type[] additionalInterfacesToProxy,
 		                                               Type targetType,
-		                                               ProxyGenerationOptions options)
+		                                               IProxyGenerationOptions options)
 		{
 			AssertValidType(interfaceToProxy);
 			AssertValidTypes(additionalInterfacesToProxy);
@@ -90,7 +90,7 @@ namespace Castle.DynamicProxy
 		}
 
 		public Type CreateInterfaceProxyTypeWithTargetInterface(Type interfaceToProxy, Type[] additionalInterfacesToProxy,
-		                                                        ProxyGenerationOptions options)
+		                                                        IProxyGenerationOptions options)
 		{
 			AssertValidType(interfaceToProxy);
 			AssertValidTypes(additionalInterfacesToProxy);
@@ -100,7 +100,7 @@ namespace Castle.DynamicProxy
 		}
 
 		public Type CreateInterfaceProxyTypeWithoutTarget(Type interfaceToProxy, Type[] additionalInterfacesToProxy,
-		                                                  ProxyGenerationOptions options)
+		                                                  IProxyGenerationOptions options)
 		{
 			AssertValidType(interfaceToProxy);
 			AssertValidTypes(additionalInterfacesToProxy);

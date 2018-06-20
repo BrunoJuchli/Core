@@ -30,7 +30,7 @@ namespace Castle.DynamicProxy.Contributors
 		}
 
 		protected override MethodGenerator GetMethodGenerator(MetaMethod method, ClassEmitter @class,
-		                                                      ProxyGenerationOptions options,
+		                                                      IProxyGenerationOptions options,
 		                                                      OverrideMethodDelegate overrideMethod)
 		{
 			if (!method.Proxyable)

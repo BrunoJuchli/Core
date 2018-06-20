@@ -90,7 +90,7 @@ namespace Castle.DynamicProxy.Tests
 		[Test]
 		public void SimpleMixin_ClassProxy()
 		{
-			ProxyGenerationOptions options = new ProxyGenerationOptions();
+			IProxyGenerationOptions options = new ProxyGenerationOptions();
 			SimpleMixin mixin_instance = new SimpleMixin();
 			options.AddMixinInstance(mixin_instance);
 
@@ -115,7 +115,7 @@ namespace Castle.DynamicProxy.Tests
 		[Test]
 		public void SimpleMixin_InterfaceProxy_WithTarget()
 		{
-			ProxyGenerationOptions options = new ProxyGenerationOptions();
+			IProxyGenerationOptions options = new ProxyGenerationOptions();
 			SimpleMixin mixin_instance = new SimpleMixin();
 			options.AddMixinInstance(mixin_instance);
 
@@ -141,7 +141,7 @@ namespace Castle.DynamicProxy.Tests
 		[Test]
 		public void SimpleMixin_InterfaceProxy_WithoutTarget()
 		{
-			ProxyGenerationOptions options = new ProxyGenerationOptions();
+			IProxyGenerationOptions options = new ProxyGenerationOptions();
 			SimpleMixin mixin_instance = new SimpleMixin();
 			options.AddMixinInstance(mixin_instance);
 
@@ -167,7 +167,7 @@ namespace Castle.DynamicProxy.Tests
 		[Test]
 		public void SimpleMixin_InterfaceProxy_WithtTargetInterface()
 		{
-			ProxyGenerationOptions options = new ProxyGenerationOptions();
+			IProxyGenerationOptions options = new ProxyGenerationOptions();
 			SimpleMixin mixin_instance = new SimpleMixin();
 			options.AddMixinInstance(mixin_instance);
 
@@ -315,7 +315,7 @@ namespace Castle.DynamicProxy.Tests
 		[Test]
 		public void TestTypeCachingWithMixins()
 		{
-			ProxyGenerationOptions options = new ProxyGenerationOptions();
+			IProxyGenerationOptions options = new ProxyGenerationOptions();
 			SimpleMixin mixin_instance = new SimpleMixin();
 			options.AddMixinInstance(mixin_instance);
 
@@ -337,7 +337,7 @@ namespace Castle.DynamicProxy.Tests
 		[Test]
 		public void TestTypeCachingWithMultipleMixins()
 		{
-			ProxyGenerationOptions options = new ProxyGenerationOptions();
+			IProxyGenerationOptions options = new ProxyGenerationOptions();
 			SimpleMixin mixin_instance1 = new SimpleMixin();
 			ComplexMixin mixin_instance2 = new ComplexMixin();
 			options.AddMixinInstance(mixin_instance1);
@@ -363,7 +363,7 @@ namespace Castle.DynamicProxy.Tests
 		[Test]
 		public void TwoMixinsWithSameInterface()
 		{
-			ProxyGenerationOptions options = new ProxyGenerationOptions();
+			IProxyGenerationOptions options = new ProxyGenerationOptions();
 			SimpleMixin mixin1 = new SimpleMixin();
 			OtherMixinImplementingISimpleMixin mixin2 = new OtherMixinImplementingISimpleMixin();
 			options.AddMixinInstance(mixin1);
@@ -379,7 +379,7 @@ namespace Castle.DynamicProxy.Tests
 		[Test]
 		public void MixinWithSameInterface_InterfaceWithTarget_AdditionalInterfaces()
 		{
-			ProxyGenerationOptions options = new ProxyGenerationOptions();
+			IProxyGenerationOptions options = new ProxyGenerationOptions();
 			SimpleMixin mixin1 = new SimpleMixin();
 			options.AddMixinInstance(mixin1);
 
@@ -391,7 +391,7 @@ namespace Castle.DynamicProxy.Tests
 		[Test]
 		public void MixinWithSameInterface_InterfaceWithTarget_AdditionalInterfaces_Derived()
 		{
-			ProxyGenerationOptions options = new ProxyGenerationOptions();
+			IProxyGenerationOptions options = new ProxyGenerationOptions();
 			SimpleMixin mixin1 = new SimpleMixin();
 			options.AddMixinInstance(mixin1);
 

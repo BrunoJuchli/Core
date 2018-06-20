@@ -24,7 +24,7 @@ namespace Castle.DynamicProxy.Generators
 	{
 		private readonly MemberInfo target;
 		private readonly Type[] interfaces;
-		private readonly ProxyGenerationOptions options;
+		private readonly IProxyGenerationOptions options;
 		private readonly Type type;
 
 		/// <summary>
@@ -34,7 +34,7 @@ namespace Castle.DynamicProxy.Generators
 		/// <param name = "type">The type of the proxy. This is base type for invocation types.</param>
 		/// <param name = "interfaces">The interfaces.</param>
 		/// <param name = "options">The options.</param>
-		public CacheKey(MemberInfo target, Type type, Type[] interfaces, ProxyGenerationOptions options)
+		public CacheKey(MemberInfo target, Type type, Type[] interfaces, IProxyGenerationOptions options)
 		{
 			this.target = target;
 			this.type = type;
@@ -48,7 +48,7 @@ namespace Castle.DynamicProxy.Generators
 		/// <param name = "target">Type of the target.</param>
 		/// <param name = "interfaces">The interfaces.</param>
 		/// <param name = "options">The options.</param>
-		public CacheKey(Type target, Type[] interfaces, ProxyGenerationOptions options)
+		public CacheKey(Type target, Type[] interfaces, IProxyGenerationOptions options)
 			: this(target.GetTypeInfo(), null, interfaces, options)
 		{
 		}

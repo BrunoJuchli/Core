@@ -56,7 +56,7 @@ namespace Castle.DynamicProxy.Contributors
 		}
 
 		protected override MethodGenerator GetMethodGenerator(MetaMethod method, ClassEmitter @class,
-		                                                      ProxyGenerationOptions options,
+		                                                      IProxyGenerationOptions options,
 		                                                      OverrideMethodDelegate overrideMethod)
 		{
 			if (methodsToSkip.Contains(method.Method))
@@ -85,7 +85,7 @@ namespace Castle.DynamicProxy.Contributors
 			                                         null);
 		}
 
-		private Type BuildInvocationType(MetaMethod method, ClassEmitter @class, ProxyGenerationOptions options)
+		private Type BuildInvocationType(MetaMethod method, ClassEmitter @class, IProxyGenerationOptions options)
 		{
 			if (!method.HasTarget)
 			{
@@ -115,7 +115,7 @@ namespace Castle.DynamicProxy.Contributors
 			                                                    new FieldReference(InvocationMethods.Target));
 		}
 
-		private Type GetDelegateType(MetaMethod method, ClassEmitter @class, ProxyGenerationOptions options)
+		private Type GetDelegateType(MetaMethod method, ClassEmitter @class, IProxyGenerationOptions options)
 		{
 			var scope = @class.ModuleScope;
 			var key = new CacheKey(
@@ -141,7 +141,7 @@ namespace Castle.DynamicProxy.Contributors
 			return type;
 		}
 
-		private Type GetInvocationType(MetaMethod method, ClassEmitter @class, ProxyGenerationOptions options)
+		private Type GetInvocationType(MetaMethod method, ClassEmitter @class, IProxyGenerationOptions options)
 		{
 			var scope = @class.ModuleScope;
 			var invocationInterfaces = new[] { typeof(IInvocation) };
@@ -163,7 +163,7 @@ namespace Castle.DynamicProxy.Contributors
 		}
 
 		private MethodGenerator IndirectlyCalledMethodGenerator(MetaMethod method, ClassEmitter proxy,
-		                                                        ProxyGenerationOptions options,
+		                                                        IProxyGenerationOptions options,
 		                                                        OverrideMethodDelegate overrideMethod)
 		{
 			var @delegate = GetDelegateType(method, proxy, options);

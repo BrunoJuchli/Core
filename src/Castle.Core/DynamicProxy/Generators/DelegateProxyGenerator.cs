@@ -30,8 +30,9 @@ namespace Castle.DynamicProxy.Generators
 	{
 		public DelegateProxyGenerator(ModuleScope scope, Type delegateType) : base(scope, delegateType)
 		{
-			ProxyGenerationOptions = new ProxyGenerationOptions(new DelegateProxyGenerationHook());
-			ProxyGenerationOptions.Initialize();
+			var options = new ProxyGenerationOptions(new DelegateProxyGenerationHook());
+			options.Initialize();
+			ProxyGenerationOptions = options;
 		}
 
 		public Type GetProxyType()
@@ -41,11 +42,11 @@ namespace Castle.DynamicProxy.Generators
 		}
 
 		protected virtual IEnumerable<Type> GetTypeImplementerMapping(out IEnumerable<ITypeContributor> contributors,
-		                                                              INamingScope namingScope)
+																	  INamingScope namingScope)
 		{
 			var methodsToSkip = new List<MethodInfo>();
 			var proxyInstance = new ClassProxyInstanceContributor(targetType, methodsToSkip, Type.EmptyTypes,
-			                                                      ProxyTypeConstants.ClassWithTarget);
+																  ProxyTypeConstants.ClassWithTarget);
 			var proxyTarget = new DelegateProxyTargetContributor(targetType, namingScope) { Logger = Logger };
 			IDictionary<Type, ITypeContributor> typeImplementerMapping = new Dictionary<Type, ITypeContributor>();
 
