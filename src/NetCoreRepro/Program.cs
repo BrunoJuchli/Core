@@ -17,9 +17,6 @@ namespace NetCoreRepro
 				int.TryParse(args[0], out degreeOfParallelism);
 			}
 
-			// todo remove
-			degreeOfParallelism = 1;
-
 			IReadOnlyList<Case> testCases = typeof(Program).Assembly.GetExportedTypes()
 				.Where(x => x.IsClass && !x.IsAbstract)
 				.Where(x => x.Name.StartsWith("Test"))
