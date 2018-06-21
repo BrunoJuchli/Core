@@ -33,14 +33,13 @@ namespace Castle.DynamicProxy.Generators
 		private readonly Type[] additionalInterfacesToProxy;
 
 		public ClassProxyWithTargetGenerator(ModuleScope scope, Type classToProxy, Type[] additionalInterfacesToProxy,
-		                                     ProxyGenerationOptions options)
+											 IProxyGenerationOptions options)
 			: base(scope, classToProxy)
 		{
 			CheckNotGenericTypeDefinition(targetType, "targetType");
 			EnsureDoesNotImplementIProxyTargetAccessor(targetType, "targetType");
 			CheckNotGenericTypeDefinitions(additionalInterfacesToProxy, "additionalInterfacesToProxy");
 
-			options.Initialize();
 			ProxyGenerationOptions = options;
 			this.additionalInterfacesToProxy = TypeUtil.GetAllInterfaces(additionalInterfacesToProxy);
 		}
@@ -52,11 +51,11 @@ namespace Castle.DynamicProxy.Generators
 		}
 
 		protected virtual IEnumerable<Type> GetTypeImplementerMapping(out IEnumerable<ITypeContributor> contributors,
-		                                                              INamingScope namingScope)
+																	  INamingScope namingScope)
 		{
 			var methodsToSkip = new List<MethodInfo>();
 			var proxyInstance = new ClassProxyWithTargetInstanceContributor(targetType, methodsToSkip, additionalInterfacesToProxy,
-			                                                                ProxyTypeConstants.ClassWithTarget);
+																			ProxyTypeConstants.ClassWithTarget);
 			// TODO: the trick with methodsToSkip is not very nice...
 			var proxyTarget = new ClassProxyWithTargetTargetContributor(targetType, methodsToSkip, namingScope)
 			{ Logger = Logger };
@@ -77,7 +76,7 @@ namespace Castle.DynamicProxy.Generators
 					{
 						// OK, so the target implements this interface. We now do one of two things:
 						if (additionalInterfacesToProxy.Contains(mixinInterface) &&
-						    typeImplementerMapping.ContainsKey(mixinInterface) == false)
+							typeImplementerMapping.ContainsKey(mixinInterface) == false)
 						{
 							AddMappingNoCheck(mixinInterface, proxyTarget, typeImplementerMapping);
 							proxyTarget.AddInterfaceToProxy(mixinInterface);
@@ -96,7 +95,7 @@ namespace Castle.DynamicProxy.Generators
 				}
 			}
 			var additionalInterfacesContributor = new InterfaceProxyWithoutTargetContributor(namingScope,
-			                                                                                 (c, m) => NullExpression.Instance)
+																							 (c, m) => NullExpression.Instance)
 			{ Logger = Logger };
 			// 3. then additional interfaces
 			foreach (var @interface in additionalInterfacesToProxy)

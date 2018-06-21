@@ -50,7 +50,7 @@ namespace Castle.DynamicProxy.Contributors
 			return GetTargetReference(emitter).ToExpression();
 		}
 
-		public virtual void Generate(ClassEmitter @class, ProxyGenerationOptions options)
+		public virtual void Generate(ClassEmitter @class, IProxyGenerationOptions options)
 		{
 			var interceptors = @class.GetField("__interceptors");
 #if FEATURE_SERIALIZATION

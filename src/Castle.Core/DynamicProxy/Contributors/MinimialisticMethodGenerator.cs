@@ -28,7 +28,7 @@ namespace Castle.DynamicProxy.Contributors
 		}
 
 		protected override MethodEmitter BuildProxiedMethodBody(MethodEmitter emitter, ClassEmitter @class,
-		                                                        ProxyGenerationOptions options, INamingScope namingScope)
+		                                                        IProxyGenerationOptions options, INamingScope namingScope)
 		{
 			InitOutParameters(emitter, MethodToOverride.GetParameters());
 

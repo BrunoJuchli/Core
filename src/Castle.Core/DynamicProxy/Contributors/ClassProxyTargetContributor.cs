@@ -57,7 +57,7 @@ namespace Castle.DynamicProxy.Contributors
 		}
 
 		protected override MethodGenerator GetMethodGenerator(MetaMethod method, ClassEmitter @class,
-		                                                      ProxyGenerationOptions options,
+		                                                      IProxyGenerationOptions options,
 		                                                      OverrideMethodDelegate overrideMethod)
 		{
 			if (methodsToSkip.Contains(method.Method))
@@ -89,7 +89,7 @@ namespace Castle.DynamicProxy.Contributors
 			                                         null);
 		}
 
-		private Type BuildInvocationType(MetaMethod method, ClassEmitter @class, ProxyGenerationOptions options)
+		private Type BuildInvocationType(MetaMethod method, ClassEmitter @class, IProxyGenerationOptions options)
 		{
 			var methodInfo = method.Method;
 			if (!method.HasTarget)
@@ -141,7 +141,7 @@ namespace Castle.DynamicProxy.Contributors
 		}
 
 		private MethodGenerator ExplicitlyImplementedInterfaceMethodGenerator(MetaMethod method, ClassEmitter @class,
-		                                                                      ProxyGenerationOptions options,
+		                                                                      IProxyGenerationOptions options,
 		                                                                      OverrideMethodDelegate overrideMethod)
 		{
 			var @delegate = GetDelegateType(method, @class, options);
@@ -168,7 +168,7 @@ namespace Castle.DynamicProxy.Contributors
 			                                                    new FieldReference(InvocationMethods.ProxyObject));
 		}
 
-		private Type GetDelegateType(MetaMethod method, ClassEmitter @class, ProxyGenerationOptions options)
+		private Type GetDelegateType(MetaMethod method, ClassEmitter @class, IProxyGenerationOptions options)
 		{
 			var scope = @class.ModuleScope;
 			var key = new CacheKey(
@@ -194,7 +194,7 @@ namespace Castle.DynamicProxy.Contributors
 			return type;
 		}
 
-		private Type GetInvocationType(MetaMethod method, ClassEmitter @class, ProxyGenerationOptions options)
+		private Type GetInvocationType(MetaMethod method, ClassEmitter @class, IProxyGenerationOptions options)
 		{
 			// NOTE: No caching since invocation is tied to this specific proxy type via its invocation method
 			return BuildInvocationType(method, @class, options);

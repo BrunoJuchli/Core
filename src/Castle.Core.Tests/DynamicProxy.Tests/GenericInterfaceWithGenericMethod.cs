@@ -22,7 +22,7 @@ namespace Castle.DynamicProxy.Tests
 	public class GenericInterfaceWithGenericMethod
 	{
 		ProxyGenerator proxyGenerator;
-		ProxyGenerationOptions options;
+		IProxyGenerationOptions options;
 
 		[SetUp]
 		public void Setup()

@@ -57,10 +57,10 @@ namespace Castle.DynamicProxy
 		///    cref = "InternalsVisibleToAttribute" /> 
 		///   pointing to Castle Dynamic Proxy assembly, in assembly containing that type, if this is appropriate.</exception>
 		/// <seealso cref = "ClassProxyGenerator" />
-		Type CreateClassProxyType(Type classToProxy, Type[] additionalInterfacesToProxy, ProxyGenerationOptions options);
+		Type CreateClassProxyType(Type classToProxy, Type[] additionalInterfacesToProxy, IProxyGenerationOptions options);
 
 		Type CreateClassProxyTypeWithTarget(Type classToProxy, Type[] additionalInterfacesToProxy,
-		                                    ProxyGenerationOptions options);
+		                                    IProxyGenerationOptions options);
 
 		/// <summary>
 		///   Creates a proxy type that proxies calls to <paramref name = "interfaceToProxy" /> members on <paramref
@@ -86,7 +86,7 @@ namespace Castle.DynamicProxy
 		///   pointing to Castle Dynamic Proxy assembly, in assembly containing that type, if this is appropriate.</exception>
 		/// <seealso cref = "InterfaceProxyWithTargetGenerator" />
 		Type CreateInterfaceProxyTypeWithTarget(Type interfaceToProxy, Type[] additionalInterfacesToProxy, Type targetType,
-		                                        ProxyGenerationOptions options);
+		                                        IProxyGenerationOptions options);
 
 		/// <summary>
 		///   Creates a proxy type for given <paramref name = "interfaceToProxy" /> and <parmaref
@@ -111,7 +111,7 @@ namespace Castle.DynamicProxy
 		///   pointing to Castle Dynamic Proxy assembly, in assembly containing that type, if this is appropriate.</exception>
 		/// <seealso cref = "InterfaceProxyWithTargetInterfaceGenerator" />
 		Type CreateInterfaceProxyTypeWithTargetInterface(Type interfaceToProxy, Type[] additionalInterfacesToProxy,
-		                                                 ProxyGenerationOptions options);
+		                                                 IProxyGenerationOptions options);
 
 		/// <summary>
 		///   Creates a proxy type for given <paramref name = "interfaceToProxy" /> that delegates all calls to the provided interceptors.
@@ -132,6 +132,6 @@ namespace Castle.DynamicProxy
 		///   pointing to Castle Dynamic Proxy assembly, in assembly containing that type, if this is appropriate.</exception>
 		/// <seealso cref = "InterfaceProxyWithoutTargetGenerator" />
 		Type CreateInterfaceProxyTypeWithoutTarget(Type interfaceToProxy, Type[] additionalInterfacesToProxy,
-		                                           ProxyGenerationOptions options);
+		                                           IProxyGenerationOptions options);
 	}
 }

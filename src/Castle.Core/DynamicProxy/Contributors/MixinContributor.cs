@@ -53,7 +53,7 @@ namespace Castle.DynamicProxy.Contributors
 			empty.Add(@interface);
 		}
 
-		public override void Generate(ClassEmitter @class, ProxyGenerationOptions options)
+		public override void Generate(ClassEmitter @class, IProxyGenerationOptions options)
 		{
 			foreach (var @interface in interfaces)
 			{
@@ -79,7 +79,7 @@ namespace Castle.DynamicProxy.Contributors
 		}
 
 		protected override MethodGenerator GetMethodGenerator(MetaMethod method, ClassEmitter @class,
-		                                                      ProxyGenerationOptions options,
+		                                                      IProxyGenerationOptions options,
 		                                                      OverrideMethodDelegate overrideMethod)
 		{
 			if (!method.Proxyable)
@@ -116,7 +116,7 @@ namespace Castle.DynamicProxy.Contributors
 			return @class.CreateField(namingScope.GetUniqueName(name), type);
 		}
 
-		private Type GetInvocationType(MetaMethod method, ClassEmitter emitter, ProxyGenerationOptions options)
+		private Type GetInvocationType(MetaMethod method, ClassEmitter emitter, IProxyGenerationOptions options)
 		{
 			var scope = emitter.ModuleScope;
 			Type[] invocationInterfaces;

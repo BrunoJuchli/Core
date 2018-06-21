@@ -17,7 +17,6 @@ namespace Castle.DynamicProxy.Generators
 	using System;
 	using System.Collections.Generic;
 	using System.Diagnostics;
-	using System.Linq;
 	using System.Reflection;
 #if FEATURE_SERIALIZATION
 	using System.Runtime.Serialization;
@@ -40,7 +39,7 @@ namespace Castle.DynamicProxy.Generators
 		protected readonly Type targetType;
 		private readonly ModuleScope scope;
 		private ILogger logger = NullLogger.Instance;
-		private ProxyGenerationOptions proxyGenerationOptions;
+		private IProxyGenerationOptions proxyGenerationOptions;
 
 		protected BaseProxyGenerator(ModuleScope scope, Type targetType)
 		{
@@ -54,7 +53,7 @@ namespace Castle.DynamicProxy.Generators
 			set { logger = value; }
 		}
 
-		protected ProxyGenerationOptions ProxyGenerationOptions
+		protected IProxyGenerationOptions ProxyGenerationOptions
 		{
 			get
 			{
@@ -93,7 +92,7 @@ namespace Castle.DynamicProxy.Generators
 
 #if FEATURE_SERIALIZATION
 		protected void AddMappingForISerializable(IDictionary<Type, ITypeContributor> typeImplementerMapping,
-		                                          ITypeContributor instance)
+												  ITypeContributor instance)
 		{
 			AddMapping(typeof(ISerializable), instance, typeImplementerMapping);
 		}
@@ -106,7 +105,7 @@ namespace Castle.DynamicProxy.Generators
 		/// <param name = "interface"></param>
 		/// <param name = "mapping"></param>
 		protected void AddMappingNoCheck(Type @interface, ITypeContributor implementer,
-		                                 IDictionary<Type, ITypeContributor> mapping)
+										 IDictionary<Type, ITypeContributor> mapping)
 		{
 			mapping.Add(@interface, implementer);
 		}
@@ -167,7 +166,7 @@ namespace Castle.DynamicProxy.Generators
 
 		protected FieldReference CreateOptionsField(ClassEmitter emitter)
 		{
-			return emitter.CreateStaticField("proxyGenerationOptions", typeof(ProxyGenerationOptions));
+			return emitter.CreateStaticField("proxyGenerationOptions", typeof(IProxyGenerationOptions));
 		}
 
 		protected void CreateSelectorField(ClassEmitter emitter)
@@ -188,7 +187,7 @@ namespace Castle.DynamicProxy.Generators
 #endif
 		}
 
-		protected void EnsureOptionsOverrideEqualsAndGetHashCode(ProxyGenerationOptions options)
+		protected void EnsureOptionsOverrideEqualsAndGetHashCode(IProxyGenerationOptions options)
 		{
 			if (Logger.IsWarnEnabled)
 			{
@@ -196,8 +195,8 @@ namespace Castle.DynamicProxy.Generators
 				if (!OverridesEqualsAndGetHashCode(options.Hook.GetType()))
 				{
 					Logger.WarnFormat("The IProxyGenerationHook type {0} does not override both Equals and GetHashCode. " +
-					                  "If these are not correctly overridden caching will fail to work causing performance problems.",
-					                  options.Hook.GetType().FullName);
+									  "If these are not correctly overridden caching will fail to work causing performance problems.",
+									  options.Hook.GetType().FullName);
 				}
 
 				// Interceptor selectors no longer need to override Equals and GetHashCode
@@ -205,7 +204,7 @@ namespace Castle.DynamicProxy.Generators
 		}
 
 		protected void GenerateConstructor(ClassEmitter emitter, ConstructorInfo baseConstructor,
-		                                   params FieldReference[] fields)
+										   params FieldReference[] fields)
 		{
 			ArgumentReference[] args;
 			ParameterInfo[] baseConstructorParams = null;
@@ -301,12 +300,12 @@ namespace Castle.DynamicProxy.Generators
 		{
 			// Check if the type actually has a default constructor
 			var defaultConstructor = baseClass.GetConstructor(BindingFlags.Public | BindingFlags.Instance, null, Type.EmptyTypes,
-			                                                  null);
+															  null);
 
 			if (defaultConstructor == null)
 			{
 				defaultConstructor = baseClass.GetConstructor(BindingFlags.NonPublic | BindingFlags.Instance, null, Type.EmptyTypes,
-				                                              null);
+															  null);
 
 				if (defaultConstructor == null || defaultConstructor.IsPrivate)
 				{
@@ -319,7 +318,7 @@ namespace Castle.DynamicProxy.Generators
 			// initialize fields with an empty interceptor
 
 			constructor.CodeBuilder.AddStatement(new AssignStatement(interceptorField,
-			                                                         new NewArrayExpression(1, typeof(IInterceptor))));
+																	 new NewArrayExpression(1, typeof(IInterceptor))));
 			constructor.CodeBuilder.AddStatement(
 				new AssignArrayStatement(interceptorField, 0, new NewInstanceExpression(typeof(StandardInterceptor), new Type[0])));
 
@@ -341,7 +340,7 @@ namespace Castle.DynamicProxy.Generators
 		}
 
 		protected void HandleExplicitlyPassedProxyTargetAccessor(ICollection<Type> targetInterfaces,
-		                                                         ICollection<Type> additionalInterfaces)
+																 ICollection<Type> additionalInterfaces)
 		{
 			var interfaceName = typeof(IProxyTargetAccessor).ToString();
 			//ok, let's determine who tried to sneak the IProxyTargetAccessor in...
@@ -372,7 +371,7 @@ namespace Castle.DynamicProxy.Generators
 			{
 				// this can technically never happen
 				message = string.Format("It looks like we have a bug with regards to how we handle {0}. Please report it.",
-				                        interfaceName);
+										interfaceName);
 			}
 			throw new ProxyGenerationException("This is a DynamicProxy2 error: " + message);
 		}

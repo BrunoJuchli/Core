@@ -37,7 +37,7 @@ namespace Castle.DynamicProxy.Contributors
 #endif
 
 		public ClassProxyInstanceContributor(Type targetType, IList<MethodInfo> methodsToSkip, Type[] interfaces,
-		                                     string typeId)
+											 string typeId)
 			: base(targetType, interfaces, typeId)
 		{
 #if FEATURE_SERIALIZATION
@@ -54,7 +54,7 @@ namespace Castle.DynamicProxy.Contributors
 			return SelfReference.Self;
 		}
 
-		public override void Generate(ClassEmitter @class, ProxyGenerationOptions options)
+		public override void Generate(ClassEmitter @class, IProxyGenerationOptions options)
 		{
 			var interceptors = @class.GetField("__interceptors");
 #if FEATURE_SERIALIZATION
@@ -73,22 +73,22 @@ namespace Castle.DynamicProxy.Contributors
 
 #if FEATURE_SERIALIZATION
 		protected override void AddAddValueInvocation(ArgumentReference serializationInfo, MethodEmitter getObjectData,
-		                                              FieldReference field)
+													  FieldReference field)
 		{
 			serializedFields.Add(field);
 			base.AddAddValueInvocation(serializationInfo, getObjectData, field);
 		}
 
 		protected override void CustomizeGetObjectData(AbstractCodeBuilder codebuilder, ArgumentReference serializationInfo,
-		                                               ArgumentReference streamingContext, ClassEmitter emitter)
+													   ArgumentReference streamingContext, ClassEmitter emitter)
 		{
 			codebuilder.AddStatement(new ExpressionStatement(
-			                         	new MethodInvocationExpression(
-			                         		serializationInfo,
-			                         		SerializationInfoMethods.AddValue_Bool,
-			                         		new ConstReference("__delegateToBase").ToExpression(),
-			                         		new ConstReference(delegateToBaseGetObjectData).
-			                         			ToExpression())));
+										 new MethodInvocationExpression(
+											 serializationInfo,
+											 SerializationInfoMethods.AddValue_Bool,
+											 new ConstReference("__delegateToBase").ToExpression(),
+											 new ConstReference(delegateToBaseGetObjectData).
+												 ToExpression())));
 
 			if (delegateToBaseGetObjectData == false)
 			{
@@ -133,15 +133,15 @@ namespace Castle.DynamicProxy.Contributors
 		}
 
 		private void EmitCallToBaseGetObjectData(AbstractCodeBuilder codebuilder, ArgumentReference serializationInfo,
-		                                         ArgumentReference streamingContext)
+												 ArgumentReference streamingContext)
 		{
 			var baseGetObjectData = targetType.GetMethod("GetObjectData",
-			                                             new[] { typeof(SerializationInfo), typeof(StreamingContext) });
+														 new[] { typeof(SerializationInfo), typeof(StreamingContext) });
 
 			codebuilder.AddStatement(new ExpressionStatement(
-			                         	new MethodInvocationExpression(baseGetObjectData,
-			                         	                               serializationInfo.ToExpression(),
-			                         	                               streamingContext.ToExpression())));
+										 new MethodInvocationExpression(baseGetObjectData,
+																		serializationInfo.ToExpression(),
+																		streamingContext.ToExpression())));
 		}
 
 		private void Constructor(ClassEmitter emitter)
@@ -162,20 +162,20 @@ namespace Castle.DynamicProxy.Contributors
 
 			ctor.CodeBuilder.AddStatement(
 				new ConstructorInvocationStatement(serializationConstructor,
-				                                   serializationInfo.ToExpression(),
-				                                   streamingContext.ToExpression()));
+												   serializationInfo.ToExpression(),
+												   streamingContext.ToExpression()));
 
 			foreach (var field in serializedFields)
 			{
 				var getValue = new MethodInvocationExpression(serializationInfo,
-				                                              SerializationInfoMethods.GetValue,
-				                                              new ConstReference(field.Reference.Name).ToExpression(),
-				                                              new TypeTokenExpression(field.Reference.FieldType));
+															  SerializationInfoMethods.GetValue,
+															  new ConstReference(field.Reference.Name).ToExpression(),
+															  new TypeTokenExpression(field.Reference.FieldType));
 				ctor.CodeBuilder.AddStatement(new AssignStatement(
-				                              	field,
-				                              	new ConvertExpression(field.Reference.FieldType,
-				                              	                      typeof(object),
-				                              	                      getValue)));
+												  field,
+												  new ConvertExpression(field.Reference.FieldType,
+																		typeof(object),
+																		getValue)));
 			}
 			ctor.CodeBuilder.AddStatement(new ReturnStatement());
 		}
@@ -204,9 +204,9 @@ namespace Castle.DynamicProxy.Contributors
 			if (!getObjectDataMethod.IsVirtual || getObjectDataMethod.IsFinal)
 			{
 				var message = String.Format("The type {0} implements ISerializable, but GetObjectData is not marked as virtual. " +
-				                            "Dynamic Proxy needs types implementing ISerializable to mark GetObjectData as virtual " +
-				                            "to ensure correct serialization process.",
-				                            baseType.FullName);
+											"Dynamic Proxy needs types implementing ISerializable to mark GetObjectData as virtual " +
+											"to ensure correct serialization process.",
+											baseType.FullName);
 				throw new ArgumentException(message);
 			}
 
@@ -222,8 +222,8 @@ namespace Castle.DynamicProxy.Contributors
 			if (serializationConstructor == null)
 			{
 				var message = String.Format("The type {0} implements ISerializable, " +
-				                            "but failed to provide a deserialization constructor",
-				                            baseType.FullName);
+											"but failed to provide a deserialization constructor",
+											baseType.FullName);
 				throw new ArgumentException(message);
 			}
 
