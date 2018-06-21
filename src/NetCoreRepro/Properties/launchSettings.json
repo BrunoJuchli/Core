@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "NetCoreRepro": {
+      "commandName": "Project",
+      "commandLineArgs": "1"
+    }
+  }
+}
