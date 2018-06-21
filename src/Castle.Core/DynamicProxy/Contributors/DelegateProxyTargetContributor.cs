@@ -39,41 +39,27 @@ namespace Castle.DynamicProxy.Contributors
 		}
 
 		protected override MethodGenerator GetMethodGenerator(MetaMethod method, ClassEmitter @class,
-		                                                      ProxyGenerationOptions options,
-		                                                      OverrideMethodDelegate overrideMethod)
+															  ProxyGenerationOptions options,
+															  OverrideMethodDelegate overrideMethod)
 		{
 			var invocation = GetInvocationType(method, @class, options);
 			return new MethodWithInvocationGenerator(method,
-			                                         @class.GetField("__interceptors"),
-			                                         invocation,
-			                                         (c, m) => c.GetField("__target").ToExpression(),
-			                                         overrideMethod,
-			                                         null);
+													 @class.GetField("__interceptors"),
+													 invocation,
+													 (c, m) => c.GetField("__target").ToExpression(),
+													 overrideMethod,
+													 null);
 		}
 
 		private Type GetInvocationType(MetaMethod method, ClassEmitter emitter, ProxyGenerationOptions options)
 		{
-			var scope = emitter.ModuleScope;
-			var key = new CacheKey(method.Method, CompositionInvocationTypeGenerator.BaseType, null, null);
-
-			// no locking required as we're already within a lock
-			var invocation = scope.GetFromCache(key);
-			if (invocation != null)
-			{
-				return invocation;
-			}
-
-			invocation = new CompositionInvocationTypeGenerator(method.Method.DeclaringType,
-			                                                    method,
-			                                                    method.Method,
-			                                                    false,
-			                                                    null)
+			return new CompositionInvocationTypeGenerator(method.Method.DeclaringType,
+																method,
+																method.Method,
+																false,
+																null)
 				.Generate(emitter, options, namingScope)
 				.BuildType();
-
-			scope.RegisterInCache(key, invocation);
-
-			return invocation;
 		}
 	}
 }

@@ -47,9 +47,9 @@ namespace Castle.DynamicProxy.Contributors
 			Debug.Assert(@interface != null, "@interface == null", "Shouldn't be adding empty interfaces...");
 			Debug.Assert(@interface.GetTypeInfo().IsInterface, "@interface.IsInterface", "Should be adding interfaces only...");
 			Debug.Assert(!interfaces.Contains(@interface), "!interfaces.Contains(@interface)",
-			             "Shouldn't be adding same interface twice...");
+						 "Shouldn't be adding same interface twice...");
 			Debug.Assert(!empty.Contains(@interface), "!empty.Contains(@interface)",
-			             "Shouldn't be adding same interface twice...");
+						 "Shouldn't be adding same interface twice...");
 			empty.Add(@interface);
 		}
 
@@ -79,23 +79,23 @@ namespace Castle.DynamicProxy.Contributors
 		}
 
 		protected override MethodGenerator GetMethodGenerator(MetaMethod method, ClassEmitter @class,
-		                                                      ProxyGenerationOptions options,
-		                                                      OverrideMethodDelegate overrideMethod)
+															  ProxyGenerationOptions options,
+															  OverrideMethodDelegate overrideMethod)
 		{
 			if (!method.Proxyable)
 			{
 				return new ForwardingMethodGenerator(method,
-				                                     overrideMethod,
-				                                     (c, i) => fields[i.DeclaringType]);
+													 overrideMethod,
+													 (c, i) => fields[i.DeclaringType]);
 			}
 
 			var invocation = GetInvocationType(method, @class, options);
 			return new MethodWithInvocationGenerator(method,
-			                                         @class.GetField("__interceptors"),
-			                                         invocation,
-			                                         getTargetExpression,
-			                                         overrideMethod,
-			                                         null);
+													 @class.GetField("__interceptors"),
+													 invocation,
+													 getTargetExpression,
+													 overrideMethod,
+													 null);
 		}
 
 		private GetTargetExpressionDelegate BuildGetTargetExpression()
@@ -106,8 +106,8 @@ namespace Castle.DynamicProxy.Contributors
 			}
 
 			return (c, m) => new NullCoalescingOperatorExpression(
-			                 	new AsTypeReference(c.GetField("__target"), m.DeclaringType).ToExpression(),
-			                 	fields[m.DeclaringType].ToExpression());
+								 new AsTypeReference(c.GetField("__target"), m.DeclaringType).ToExpression(),
+								 fields[m.DeclaringType].ToExpression());
 		}
 
 		private FieldReference BuildTargetField(ClassEmitter @class, Type type)
@@ -118,7 +118,6 @@ namespace Castle.DynamicProxy.Contributors
 
 		private Type GetInvocationType(MetaMethod method, ClassEmitter emitter, ProxyGenerationOptions options)
 		{
-			var scope = emitter.ModuleScope;
 			Type[] invocationInterfaces;
 			if (canChangeTarget)
 			{
@@ -128,27 +127,14 @@ namespace Castle.DynamicProxy.Contributors
 			{
 				invocationInterfaces = new[] { typeof(IInvocation) };
 			}
-			var key = new CacheKey(method.Method, CompositionInvocationTypeGenerator.BaseType, invocationInterfaces, null);
 
-			// no locking required as we're already within a lock
-
-			var invocation = scope.GetFromCache(key);
-			if (invocation != null)
-			{
-				return invocation;
-			}
-
-			invocation = new CompositionInvocationTypeGenerator(method.Method.DeclaringType,
-			                                                    method,
-			                                                    method.Method,
-			                                                    canChangeTarget,
-			                                                    null)
+			return new CompositionInvocationTypeGenerator(method.Method.DeclaringType,
+																method,
+																method.Method,
+																canChangeTarget,
+																null)
 				.Generate(emitter, options, namingScope)
 				.BuildType();
-
-			scope.RegisterInCache(key, invocation);
-
-			return invocation;
 		}
 	}
 }
