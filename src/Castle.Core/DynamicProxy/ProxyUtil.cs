@@ -24,12 +24,10 @@ namespace Castle.DynamicProxy
 	using System.Runtime.Remoting;
 #endif
 
-	using Castle.Core.Internal;
 
 	public static class ProxyUtil
 	{
 		private static readonly IDictionary<Assembly, bool> internalsVisibleToDynamicProxy = new Dictionary<Assembly, bool>();
-		private static readonly Lock internalsVisibleToDynamicProxyLock = Lock.Create();
 
 		public static object GetUnproxiedInstance(object instance)
 		{
@@ -131,30 +129,20 @@ namespace Castle.DynamicProxy
 		/// <param name="asm">The assembly to inspect.</param>
 		internal static bool AreInternalsVisibleToDynamicProxy(Assembly asm)
 		{
-			using (var locker = internalsVisibleToDynamicProxyLock.ForReading())
+			if (internalsVisibleToDynamicProxy.ContainsKey(asm))
 			{
-				if (internalsVisibleToDynamicProxy.ContainsKey(asm))
-				{
-					return internalsVisibleToDynamicProxy[asm];
-				}
+				return internalsVisibleToDynamicProxy[asm];
 			}
 
-			using (var locker = internalsVisibleToDynamicProxyLock.ForReadingUpgradeable())
+			if (internalsVisibleToDynamicProxy.ContainsKey(asm))
 			{
-				if (internalsVisibleToDynamicProxy.ContainsKey(asm))
-				{
-					return internalsVisibleToDynamicProxy[asm];
-				}
-
-				// Upgrade the lock to a write lock.
-				using (locker.Upgrade())
-				{
-					var internalsVisibleTo = asm.GetCustomAttributes<InternalsVisibleToAttribute>();
-					var found = internalsVisibleTo.Any(attr => attr.AssemblyName.Contains(ModuleScope.DEFAULT_ASSEMBLY_NAME));
-					internalsVisibleToDynamicProxy.Add(asm, found);
-					return found;
-				}
+				return internalsVisibleToDynamicProxy[asm];
 			}
+
+			var internalsVisibleTo = asm.GetCustomAttributes<InternalsVisibleToAttribute>();
+			var found = internalsVisibleTo.Any(attr => attr.AssemblyName.Contains(ModuleScope.DEFAULT_ASSEMBLY_NAME));
+			internalsVisibleToDynamicProxy.Add(asm, found);
+			return found;
 		}
 
 		internal static bool IsAccessibleType(Type target)

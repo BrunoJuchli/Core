@@ -23,7 +23,6 @@ namespace Castle.Components.DictionaryAdapter.Xml
 	public class SingletonDispenser<TKey, TItem>
 		where TItem : class
 	{
-		private readonly Lock locker;
 		private readonly Dictionary<TKey, object> items;
 		private readonly Func<TKey, TItem> factory;
 
@@ -32,8 +31,7 @@ namespace Castle.Components.DictionaryAdapter.Xml
 			if (factory == null)
 				throw Error.ArgumentNull("factory");
 
-			this.locker  = new SlimReadWriteLock();
-			this.items   = new Dictionary<TKey, object>();
+			this.items = new Dictionary<TKey, object>();
 			this.factory = factory;
 		}
 
@@ -53,42 +51,29 @@ namespace Castle.Components.DictionaryAdapter.Xml
 
 		private bool TryGetExistingItem(TKey key, out object item)
 		{
-			using (locker.ForReading())
-			{
-				if (items.TryGetValue(key, out item))
-					return true;
-			}
+			if (items.TryGetValue(key, out item))
+				return true;
 
-			using (var hold = locker.ForReadingUpgradeable())
-			{
-				if (items.TryGetValue(key, out item))
-					return true;
-
-				using (hold.Upgrade())
-					items[key] = item = new ManualResetEvent(false);
-			}
-
+			items[key] = item = new ManualResetEvent(false);
 			return false;
 		}
 
 		private TItem WaitForCreate(TKey key, object item)
 		{
-			var handle = (ManualResetEvent) item;
+			var handle = (ManualResetEvent)item;
 
 			handle.WaitOne();
 
-			using (locker.ForReading())
-				return (TItem) items[key];
+			return (TItem)items[key];
 		}
 
 		private TItem Create(TKey key, object item)
 		{
-			var handle = (ManualResetEvent) item;
+			var handle = (ManualResetEvent)item;
 
 			var result = factory(key);
 
-			using (locker.ForWriting())
-				items[key] = result;
+			items[key] = result;
 
 			handle.Set();
 			return result;

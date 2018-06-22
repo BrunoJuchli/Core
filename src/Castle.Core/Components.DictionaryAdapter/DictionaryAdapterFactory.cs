@@ -38,14 +38,12 @@ namespace Castle.Components.DictionaryAdapter
 	{
 		private readonly Dictionary<Type, DictionaryAdapterMeta> interfaceToMeta = new Dictionary<Type, DictionaryAdapterMeta>();
 
-		private readonly Lock interfaceToMetaLock = Lock.Create();
-
 		#region IDictionaryAdapterFactory
 
 		/// <inheritdoc />
 		public T GetAdapter<T>(IDictionary dictionary)
 		{
-			return (T) GetAdapter(typeof(T), dictionary);
+			return (T)GetAdapter(typeof(T), dictionary);
 		}
 
 		/// <inheritdoc />
@@ -54,7 +52,7 @@ namespace Castle.Components.DictionaryAdapter
 			return InternalGetAdapter(type, dictionary, null);
 		}
 
-        /// <inheritdoc />
+		/// <inheritdoc />
 		public object GetAdapter(Type type, IDictionary dictionary, PropertyDescriptor descriptor)
 		{
 			return InternalGetAdapter(type, dictionary, descriptor);
@@ -63,7 +61,7 @@ namespace Castle.Components.DictionaryAdapter
 		/// <inheritdoc />
 		public T GetAdapter<T, R>(IDictionary<string, R> dictionary)
 		{
-			return (T) GetAdapter<R>(typeof(T), dictionary);
+			return (T)GetAdapter<R>(typeof(T), dictionary);
 		}
 
 		/// <inheritdoc />
@@ -132,33 +130,21 @@ namespace Castle.Components.DictionaryAdapter
 
 			DictionaryAdapterMeta meta;
 
-			using (interfaceToMetaLock.ForReading())
-			{
-				if (interfaceToMeta.TryGetValue(type, out meta))
-					return meta;
-			}
+			if (interfaceToMeta.TryGetValue(type, out meta))
+				return meta;
 
-			using (var heldLock = interfaceToMetaLock.ForReadingUpgradeable())
-			{
-				if (interfaceToMeta.TryGetValue(type, out meta))
-					return meta;
-
-				using (heldLock.Upgrade())
-				{
-					if (descriptor == null && other != null)
-						descriptor = other.CreateDescriptor();
+			if (descriptor == null && other != null)
+				descriptor = other.CreateDescriptor();
 
 #if FEATURE_LEGACY_REFLECTION_API
 					var appDomain = Thread.GetDomain();
 					var typeBuilder = CreateTypeBuilder(type, appDomain);
 #else
-					var typeBuilder = CreateTypeBuilder(type);
+			var typeBuilder = CreateTypeBuilder(type);
 #endif
-					meta = CreateAdapterMeta(type, typeBuilder, descriptor);
-					interfaceToMeta.Add(type, meta);
-					return meta;
-				}
-			}
+			meta = CreateAdapterMeta(type, typeBuilder, descriptor);
+			interfaceToMeta.Add(type, meta);
+			return meta;
 		}
 
 		private object InternalGetAdapter(Type type, IDictionary dictionary, PropertyDescriptor descriptor)
@@ -302,7 +288,7 @@ namespace Castle.Components.DictionaryAdapter
 			ilGenerator.Emit(OpCodes.Ldarg_0);
 			ilGenerator.Emit(OpCodes.Newobj, constructor);
 			ilGenerator.Emit(OpCodes.Ret);
- 		}
+		}
 
 		private static readonly ConstructorInfo BaseCtor = typeof(DictionaryAdapterBase).GetConstructors()[0];
 		private static readonly Type[] ConstructorParameterTypes = { typeof(DictionaryAdapterInstance) };
@@ -315,7 +301,7 @@ namespace Castle.Components.DictionaryAdapter
 		{
 			const MethodAttributes propAttribs = MethodAttributes.Public | MethodAttributes.SpecialName |
 												 MethodAttributes.HideBySig | MethodAttributes.ReuseSlot |
-												 MethodAttributes.Virtual   | MethodAttributes.Final;
+												 MethodAttributes.Virtual | MethodAttributes.Final;
 
 			var getMethodBuilder = typeBuilder.DefineMethod("get_" + prop.Name, propAttribs, prop.PropertyType, null);
 
@@ -366,7 +352,7 @@ namespace Castle.Components.DictionaryAdapter
 
 		#region Getters
 
-		private static void CreatePropertyGetMethod(TypeBuilder typeBuilder, PropertyBuilder propertyBuilder, 
+		private static void CreatePropertyGetMethod(TypeBuilder typeBuilder, PropertyBuilder propertyBuilder,
 			PropertyDescriptor descriptor, MethodAttributes propAttribs)
 		{
 			var getMethodBuilder = typeBuilder.DefineMethod("get_" + descriptor.PropertyName, propAttribs, descriptor.PropertyType, null);
@@ -419,7 +405,7 @@ namespace Castle.Components.DictionaryAdapter
 		private static void CreatePropertySetMethod(TypeBuilder typeBuilder, PropertyBuilder propertyBuilder,
 			PropertyDescriptor descriptor, MethodAttributes propAttribs)
 		{
-			var setMethodBuilder = typeBuilder.DefineMethod("set_" + descriptor.PropertyName, propAttribs, null, new[] {descriptor.PropertyType});
+			var setMethodBuilder = typeBuilder.DefineMethod("set_" + descriptor.PropertyName, propAttribs, null, new[] { descriptor.PropertyType });
 			var setILGenerator = setMethodBuilder.GetILGenerator();
 			PreparePropertyMethod(descriptor, setILGenerator);
 
@@ -458,7 +444,7 @@ namespace Castle.Components.DictionaryAdapter
 						.AddBehaviors(typeBehaviors.OfType<IDictionaryInitializer>());
 #else
 			initializers.AddBehaviors(typeBehaviors.OfType<IDictionaryMetaInitializer>().Cast<IDictionaryBehavior>())
-						.AddBehaviors(typeBehaviors.OfType<IDictionaryInitializer>    ().Cast<IDictionaryBehavior>());
+						.AddBehaviors(typeBehaviors.OfType<IDictionaryInitializer>().Cast<IDictionaryBehavior>());
 #endif
 
 			CollectProperties(type, (property, reflectedType) =>
@@ -538,10 +524,10 @@ namespace Castle.Components.DictionaryAdapter
 			const BindingFlags publicBindings = BindingFlags.Public | BindingFlags.Instance;
 
 			foreach (var reflectedType in types.Where(t => InfrastructureTypes.Contains(t) == false))
-			foreach (var property in reflectedType.GetProperties(publicBindings))
-			{
-				onProperty(property, reflectedType);
-			}
+				foreach (var property in reflectedType.GetProperties(publicBindings))
+				{
+					onProperty(property, reflectedType);
+				}
 		}
 
 		private static void AddDefaultGetter(PropertyDescriptor descriptor)
@@ -550,7 +536,7 @@ namespace Castle.Components.DictionaryAdapter
 				descriptor.AddBehavior(new DefaultPropertyGetter(descriptor.TypeConverter));
 		}
 
-		private static readonly HashSet<Type> InfrastructureTypes =	new HashSet<Type>
+		private static readonly HashSet<Type> InfrastructureTypes = new HashSet<Type>
 			{
 				typeof (IEditableObject), typeof (IDictionaryEdit), typeof (IChangeTracking),
 				typeof (IRevertibleChangeTracking), typeof (IDictionaryNotify),
