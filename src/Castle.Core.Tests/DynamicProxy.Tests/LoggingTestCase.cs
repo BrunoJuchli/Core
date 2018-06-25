@@ -81,7 +81,7 @@ namespace Castle.DynamicProxy.Tests
 			ProxyGenerator generator = new ProxyGenerator { Logger = logger };
 
 			// Act
-			ProxyGenerationOptions options = new ProxyGenerationOptions {
+			IProxyGenerationOptions options = new ProxyGenerationOptions {
 				Hook = new EmptyHook()
 			};
 			generator.CreateClassProxy(typeof(EmptyClass), options);

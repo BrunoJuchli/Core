@@ -39,7 +39,7 @@ namespace Castle.DynamicProxy.Contributors
 		}
 
 		protected override MethodGenerator GetMethodGenerator(MetaMethod method, ClassEmitter @class,
-		                                                      ProxyGenerationOptions options,
+		                                                      IProxyGenerationOptions options,
 		                                                      OverrideMethodDelegate overrideMethod)
 		{
 			var invocation = GetInvocationType(method, @class, options);
@@ -51,7 +51,7 @@ namespace Castle.DynamicProxy.Contributors
 			                                         null);
 		}
 
-		private Type GetInvocationType(MetaMethod method, ClassEmitter emitter, ProxyGenerationOptions options)
+		private Type GetInvocationType(MetaMethod method, ClassEmitter emitter, IProxyGenerationOptions options)
 		{
 			var scope = emitter.ModuleScope;
 			var key = new CacheKey(method.Method, CompositionInvocationTypeGenerator.BaseType, null, null);

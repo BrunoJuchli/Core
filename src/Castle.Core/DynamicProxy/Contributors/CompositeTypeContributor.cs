@@ -70,7 +70,7 @@ namespace Castle.DynamicProxy.Contributors
 
 		protected abstract IEnumerable<MembersCollector> CollectElementsToProxyInternal(IProxyGenerationHook hook);
 
-		public virtual void Generate(ClassEmitter @class, ProxyGenerationOptions options)
+		public virtual void Generate(ClassEmitter @class, IProxyGenerationOptions options)
 		{
 			foreach (var method in methods)
 			{
@@ -106,14 +106,14 @@ namespace Castle.DynamicProxy.Contributors
 			interfaces.Add(@interface);
 		}
 
-		private void ImplementEvent(ClassEmitter emitter, MetaEvent @event, ProxyGenerationOptions options)
+		private void ImplementEvent(ClassEmitter emitter, MetaEvent @event, IProxyGenerationOptions options)
 		{
 			@event.BuildEventEmitter(emitter);
 			ImplementMethod(@event.Adder, emitter, options, @event.Emitter.CreateAddMethod);
 			ImplementMethod(@event.Remover, emitter, options, @event.Emitter.CreateRemoveMethod);
 		}
 
-		private void ImplementProperty(ClassEmitter emitter, MetaProperty property, ProxyGenerationOptions options)
+		private void ImplementProperty(ClassEmitter emitter, MetaProperty property, IProxyGenerationOptions options)
 		{
 			property.BuildPropertyEmitter(emitter);
 			if (property.CanRead)
@@ -128,10 +128,10 @@ namespace Castle.DynamicProxy.Contributors
 		}
 
 		protected abstract MethodGenerator GetMethodGenerator(MetaMethod method, ClassEmitter @class,
-		                                                      ProxyGenerationOptions options,
+		                                                      IProxyGenerationOptions options,
 		                                                      OverrideMethodDelegate overrideMethod);
 
-		private void ImplementMethod(MetaMethod method, ClassEmitter @class, ProxyGenerationOptions options,
+		private void ImplementMethod(MetaMethod method, ClassEmitter @class, IProxyGenerationOptions options,
 		                             OverrideMethodDelegate overrideMethod)
 		{
 			{

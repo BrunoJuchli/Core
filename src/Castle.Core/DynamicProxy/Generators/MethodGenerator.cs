@@ -41,9 +41,9 @@ namespace Castle.DynamicProxy.Generators
 		}
 
 		protected abstract MethodEmitter BuildProxiedMethodBody(MethodEmitter emitter, ClassEmitter @class,
-		                                                        ProxyGenerationOptions options, INamingScope namingScope);
+		                                                        IProxyGenerationOptions options, INamingScope namingScope);
 
-		public MethodEmitter Generate(ClassEmitter @class, ProxyGenerationOptions options, INamingScope namingScope)
+		public MethodEmitter Generate(ClassEmitter @class, IProxyGenerationOptions options, INamingScope namingScope)
 		{
 			var methodEmitter = overrideMethod(method.Name, method.Attributes, MethodToOverride);
 			var proxiedMethod = BuildProxiedMethodBody(methodEmitter, @class, options, namingScope);

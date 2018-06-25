@@ -18,6 +18,6 @@ namespace Castle.DynamicProxy.Generators
 
 	public interface IGenerator<T>
 	{
-		T Generate(ClassEmitter @class, ProxyGenerationOptions options, INamingScope namingScope);
+		T Generate(ClassEmitter @class, IProxyGenerationOptions options, INamingScope namingScope);
 	}
 }
